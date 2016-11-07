@@ -1,0 +1,71 @@
+﻿@model TodoApplication.Models.TodoItems
+
+@{
+    ViewBag.Title = "Todo items (" + Model.ListTitle + ")";
+}
+
+<h2>@Model.ListTitle items</h2>
+
+<table class="table">
+    <tbody>
+        @if (!Model.Items.Any())
+        {
+            <text>There isn't any todo items</text>
+        }
+
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td class="col-md-1">
+                    @Html.CheckBoxFor(modelItem => item.IsDone, new { disabled = "disabled" })
+                </td>
+                <td class="col-md-12">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    @Html.TextAreaFor(modelItem => item.Description, new { rows = 4, disabled = "disabled" })
+
+                    <a asp-action="Edit" href="@Url.Action("Edit", "Todo", new { id = item.Id })">Edit</a> |
+                    <a asp-action="Delete" href="@Url.Action("Delete", "Todo", new { id = item.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    @using (Html.BeginForm("Create", "Todo", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <h4>Create a new todo item.</h4>
+
+        @Html.Hidden("TodoId", Model.ListId)
+
+        @Html.ValidationSummary("", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.NewTodoItem.Title, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.NewTodoItem.Title, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NewTodoItem.Description, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.NewTodoItem.Description, new { @class = "form-control", row = 4 })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Create Item" />
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

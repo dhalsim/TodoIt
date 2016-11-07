@@ -1,0 +1,71 @@
+﻿@model TodoApplication.Models.TodoListsAndTodoList
+
+@{
+    ViewBag.Title = "Todo Lists";
+}
+
+<h2>User Todo Lists</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NewTodoList.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NewTodoList.CreatedTime)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.TodoLists.Any())
+        {
+            <text>There isn't any todo list</text>
+        }
+
+        @foreach (var item in Model.TodoLists)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                </td>
+                <td>
+                    <a asp-action="View" href="@Url.Action("Index", "Todo", new { id = item.Id })">View</a> |
+                    <a asp-action="Edit" href="@Url.Action("Edit", "TodoList", new { id = item.Id })">Edit</a> |
+                    <a asp-action="Delete" href="@Url.Action("Delete", "TodoList", new { id = item.Id })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>New Todo List</h2>
+
+@using (Html.BeginForm("Create", "TodoList", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Create a new todo list.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.NewTodoList.Title, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.NewTodoList.Title, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Create List" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
